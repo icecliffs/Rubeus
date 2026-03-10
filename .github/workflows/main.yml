@@ -17,11 +17,16 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1
 
+    - name: Install .NET 4.0 Reference Assemblies
+      run: |
+        nuget install Microsoft.NETFramework.ReferenceAssemblies.net40 -Version 1.0.3 -OutputDirectory ./ref_asms
+
     - name: Restore NuGet packages
       run: nuget restore Rubeus.sln
 
     - name: Build solution
-      run: dotnet build Rubeus.sln -c Release
+      run: |
+        msbuild Rubeus.sln /p:Configuration=Release /p:Platform="Any CPU" /p:ReferencePath="${{ github.workspace }}/ref_asms/Microsoft.NETFramework.ReferenceAssemblies.net40.1.0.3/build/.NETFramework/v4.0/"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
